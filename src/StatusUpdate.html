@@ -1,0 +1,136 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Status Update & Interview Reminders</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            margin: 40px;
+        }
+
+        .form-container {
+            margin-top: 20px;
+        }
+
+        input,
+        select,
+        button {
+            margin-bottom: 10px;
+            padding: 10px;
+            font-size: 16px;
+            width: 100%;
+            max-width: 300px;
+        }
+
+        button {
+            background-color: #4CAF50;
+            color: white;
+            cursor: pointer;
+        }
+
+        button:hover {
+            background-color: #45a049;
+        }
+
+        .reminders {
+            margin-top: 30px;
+        }
+    </style>
+</head>
+
+<body>
+
+    <h1>Status Update & Interview Reminders</h1>
+
+    <!-- Upcoming Interview Reminders Section -->
+    <div class="reminders">
+        <h3>Upcoming Interview Reminders</h3>
+        <div id="interviewReminder">No upcoming interviews</div>
+    </div>
+
+    <!-- Update Application Status Section -->
+    <div class="form-container">
+        <h3>Update Job Application Status</h3>
+
+        <form id="statusForm">
+            <label for="application-select">Select Application:</label>
+            <select id="application-select" name="application" required>
+                <option value="">Select an Application</option>
+                <!-- Options will be populated dynamically with JavaScript -->
+            </select><br><br>
+
+            <label for="status">Status:</label>
+            <select id="status" name="status" required>
+                <option value="applied">Applied</option>
+                <option value="interviewed">Interviewed</option>
+                <option value="offered">Offered</option>
+                <option value="rejected">Rejected</option>
+            </select><br><br>
+
+            <label for="deadline">Interview Deadline:</label>
+            <input type="date" id="deadline" name="deadline"><br><br>
+
+            <button type="submit">Update Status & Set Deadline</button>
+        </form>
+    </div>
+
+    <br>
+    <a href="index.html">Go back to Home</a>
+
+    <script>
+        // Mock application data, should come from localStorage or a backend in a real app
+        const applications = [
+            { id: 1, title: 'Software Engineer', company: 'Company A', interviewDate: '2024-12-05', status: 'applied' },
+            { id: 2, title: 'Product Manager', company: 'Company B', interviewDate: '2024-12-10', status: 'interviewed' },
+            { id: 3, title: 'Frontend Developer', company: 'Company C', interviewDate: '2024-12-15', status: 'applied' }
+        ];
+
+        // Populate the application select dropdown
+        const applicationSelect = document.getElementById('application-select');
+        applications.forEach(app => {
+            const option = document.createElement('option');
+            option.value = app.id;
+            option.textContent = `${app.title} at ${app.company}`;
+            applicationSelect.appendChild(option);
+        });
+
+        // Display upcoming interview reminder
+        const interviewReminder = document.getElementById('interviewReminder');
+        const upcomingInterviews = applications.filter(app => new Date(app.interviewDate) > new Date());
+        if (upcomingInterviews.length > 0) {
+            interviewReminder.innerHTML = `<ul>${upcomingInterviews.map(app => `<li>${app.title} at ${app.company} - Interview: ${app.interviewDate}</li>`).join('')}</ul>`;
+        }
+
+        // Handle form submission to update status and deadline
+        document.getElementById('statusForm').addEventListener('submit', function (e) {
+            e.preventDefault();
+
+            const selectedAppId = document.getElementById('application-select').value;
+            const status = document.getElementById('status').value;
+            const deadline = document.getElementById('deadline').value;
+
+            if (!selectedAppId) {
+                alert('Please select an application to update.');
+                return;
+            }
+
+            // Find selected application and update the status and deadline
+            const selectedApplication = applications.find(app => app.id == selectedAppId);
+            selectedApplication.status = status;
+            selectedApplication.interviewDate = deadline;
+
+            // Save updates (here, just log it for simplicity)
+            console.log(`Updated application ${selectedApplication.title} - Status: ${status}, Deadline: ${deadline}`);
+
+            // You can save the updated application data to localStorage or backend here
+
+            alert(`Status updated to "${status}". Interview Deadline set to ${deadline}`);
+        });
+    </script>
+
+</body>
+
+</html>
